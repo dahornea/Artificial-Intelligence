@@ -1,0 +1,82 @@
+#Load the dataset WA_Fn-UseC_-Telco-Customer-Churn.csv provided. 
+#Perform transformations on it so it is prepared to build a model (scaling the numerical data and the cathegorical features transformed in numerical integer labels.
+
+#import the libraries
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+#load the dataset
+df = pd.read_csv('WA_Fn-UseC_-Telco-Customer-Churn.csv')
+df.head()
+
+X = df.drop('Churn', axis=1)
+y = df['Churn']
+
+X_numerical = X.select_dtypes(include=['int64', 'float64'])
+X_categorical = X.select_dtypes(include=['object'])
+
+#scaling the numerical data
+from sklearn.preprocessing import StandardScaler
+scaler = StandardScaler().fit(X_numerical)
+X_numerical_scaled = scaler.transform(X_numerical)
+
+#the cathegorical features transformed in numerical integer labels
+from sklearn.preprocessing import  LabelEncoder
+enc = LabelEncoder().fit(X_categorical)
+X_categorical_encoded = enc.transform(X_categorical)
+
+#concatenate the numerical and categorical features
+X_scaled = np.concatenate((X_numerical_scaled, X_categorical_encoded), axis=1)
+
+#split the dataset into train and test
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+
+X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
+clf = LogisticRegression(randmom_state=0).fit(X_train, y_train)
+clf.score(X_test, y_test)
+
+
+#Download from https://www.kaggle.com/ the regression dataset: Student Study Hours. 
+# Create a model and make 3 predictions. Make some nice graphics to depict the model (training set, test set, predictions).
+
+#import the libraries
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+#load the dataset
+df = pd.read_csv('score.csv')
+df.head()
+
+X = df.drop('Scores', axis=1)
+y = df['Scores']
+
+#split the dataset into train and test
+
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+clf = LinearRegression().fit(X_train, y_train)
+
+#make 3 predictions
+clf.predict([[9.25], [8.25], [7.25]])
+
+#make some nice graphics to depict the model (training set, test set, predictions).
+
+plt.scatter(X_train, y_train, color='red')
+plt.plot(X_train, clf.predict(X_train), color='blue')
+plt.title('Hours vs Scores (Training set)')
+plt.xlabel('Hours')
+plt.ylabel('Scores')
+plt.show()
+
+plt.scatter(X_test, y_test, color='red')
+plt.plot(X_train, clf.predict(X_train), color='blue')
+plt.title('Hours vs Scores (Test set)')
+plt.xlabel('Hours')
+plt.ylabel('Scores')
+plt.show()
+
